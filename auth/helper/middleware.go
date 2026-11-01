@@ -33,7 +33,7 @@ func NewAdminAuthMiddleware(authConfig *types2.AuthConfig, pages *types2.StatusP
 			return
 		}
 
-		next(ctx)
+		next(huma.WithValue(ctx, "userInfo", userInfo))
 	}
 }
 
