@@ -19,6 +19,6 @@ func GetOAuth(ctx context.Context, config *types.AuthConfig) (*oidc.Provider, *o
 		ClientSecret: config.AuthClientSecret,
 		RedirectURL:  config.AuthRedirectURL,
 		Endpoint:     provider.Endpoint(),
-		Scopes:       []string{"openid", "profile", "email", "groups"},
+		Scopes:       config.AuthScopes,
 	}, nil
 }
