@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	helper2 "github.com/zerodotfive/appcore/auth/helper"
-	"github.com/zerodotfive/appcore/auth/types"
+	helper2 "github.com/zerodotfive/appcore/auth/oidc/helper"
+	"github.com/zerodotfive/appcore/auth/oidc/types"
 )
 
 type ModelSessionInfoGETResponseBody struct {

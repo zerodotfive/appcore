@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/zerodotfive/appcore/auth/types"
+	"github.com/zerodotfive/appcore/auth/oidc/types"
 )
 
 type JWT struct {

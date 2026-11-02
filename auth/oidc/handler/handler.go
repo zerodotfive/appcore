@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zerodotfive/appcore/auth/types"
+	"github.com/zerodotfive/appcore/auth/oidc/types"
 )
 
 type Handler struct {

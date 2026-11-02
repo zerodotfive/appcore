@@ -5,7 +5,7 @@ import (
 	"slices"
 
 	"github.com/danielgtaylor/huma/v2"
-	types2 "github.com/zerodotfive/appcore/auth/types"
+	types2 "github.com/zerodotfive/appcore/auth/oidc/types"
 )
 
 func NewAdminAuthMiddleware(authConfig *types2.AuthConfig, pages *types2.StatusPages) func(ctx huma.Context, next func(huma.Context)) {

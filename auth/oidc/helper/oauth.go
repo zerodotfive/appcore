@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/zerodotfive/appcore/auth/types"
+	"github.com/zerodotfive/appcore/auth/oidc/types"
 	"golang.org/x/oauth2"
 )
 
