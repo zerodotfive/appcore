@@ -1,11 +1,10 @@
-package helper
+package auth
 
 import (
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/zerodotfive/appcore/auth/oidc/types"
 )
 
 type JWT struct {
@@ -18,8 +17,8 @@ func NewJWT(key string) *JWT {
 	}
 }
 
-func (j *JWT) Issue(u *types.UserInfo) (string, error) {
-	c := types.UserInfo{
+func (j *JWT) Issue(u *UserInfo) (string, error) {
+	c := UserInfo{
 		Login: u.Login, Name: u.Name, Email: u.Email, Groups: u.Groups,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   u.Login,
@@ -31,8 +30,8 @@ func (j *JWT) Issue(u *types.UserInfo) (string, error) {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, c).SignedString(j.key)
 }
 
-func (j *JWT) Parse(raw string) (*types.UserInfo, error) {
-	var c types.UserInfo
+func (j *JWT) Parse(raw string) (*UserInfo, error) {
+	var c UserInfo
 	_, err := jwt.ParseWithClaims(raw, &c,
 		func(*jwt.Token) (any, error) { return j.key, nil },
 		jwt.WithValidMethods([]string{"HS256"}), // защита от подмены алгоритма

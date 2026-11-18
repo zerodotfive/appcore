@@ -1,14 +1,13 @@
-package helper
+package oidc
 
 import (
 	"context"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/zerodotfive/appcore/auth/oidc/types"
 	"golang.org/x/oauth2"
 )
 
-func GetOAuth(ctx context.Context, config *types.AuthConfig) (*oidc.Provider, *oauth2.Config, error) {
+func GetOAuth(ctx context.Context, config *OAuthConfig) (*oidc.Provider, *oauth2.Config, error) {
 	provider, err := oidc.NewProvider(ctx, config.OpenIDConfigurationIssuer)
 	if err != nil {
 		return nil, nil, err

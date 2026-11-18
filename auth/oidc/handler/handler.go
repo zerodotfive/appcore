@@ -4,18 +4,18 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zerodotfive/appcore/auth/oidc/types"
+	"github.com/zerodotfive/appcore/auth/oidc"
 )
 
 type Handler struct {
-	authConfig *types.AuthConfig
-	logger     *log.Logger
+	oauthConfig *oidc.OAuthConfig
+	logger      *log.Logger
 }
 
-func Register(apiRouter *http.ServeMux, authConfig *types.AuthConfig, logger *log.Logger) {
+func Register(apiRouter *http.ServeMux, authConfig *oidc.OAuthConfig, logger *log.Logger) {
 	h := &Handler{
-		authConfig: authConfig,
-		logger:     logger,
+		oauthConfig: authConfig,
+		logger:      logger,
 	}
 
 	apiRouter.HandleFunc("GET /auth/login", h.login)

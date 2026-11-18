@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"net/url"
 
-	helper2 "github.com/zerodotfive/appcore/auth/oidc/helper"
-	"github.com/zerodotfive/appcore/auth/oidc/types"
+	"github.com/zerodotfive/appcore/auth"
+	"github.com/zerodotfive/appcore/auth/oidc"
 )
 
 type ModelSessionInfoGETResponseBody struct {
-	Status   bool            `json:"status"`
-	UserInfo *types.UserInfo `json:"user_info"`
+	Status   bool           `json:"status"`
+	UserInfo *auth.UserInfo `json:"user_info"`
 }
 
 func safeReturn(referer string, currentHost string) string {
@@ -30,11 +30,11 @@ func safeReturn(referer string, currentHost string) string {
 		return "/"
 	}
 
-	return referer
+	return rp.String()
 }
 
 func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
-	_, oauth, err := helper2.GetOAuth(r.Context(), h.authConfig)
+	_, oauth, err := oidc.GetOAuth(r.Context(), h.oauthConfig)
 	if err != nil {
 		h.logger.Printf("login: %s", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -133,7 +133,7 @@ func (h *Handler) callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	provider, oauth, err := helper2.GetOAuth(r.Context(), h.authConfig)
+	provider, oauth, err := oidc.GetOAuth(r.Context(), h.oauthConfig)
 	if err != nil {
 		h.logger.Printf("callback: %s", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -165,7 +165,7 @@ func (h *Handler) callback(w http.ResponseWriter, r *http.Request) {
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	var userInfo types.UserInfo
+	var userInfo auth.UserInfo
 	if err := json.NewDecoder(resp.Body).Decode(&userInfo); err != nil {
 		h.logger.Printf("callback: %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -173,7 +173,7 @@ func (h *Handler) callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt := helper2.NewJWT(h.authConfig.JWTKey)
+	jwt := auth.NewJWT(h.oauthConfig.JWTKey)
 	session, err := jwt.Issue(&userInfo)
 	if err != nil {
 		h.logger.Printf("callback: %s", err.Error())
@@ -219,7 +219,7 @@ func (h *Handler) info(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt := helper2.NewJWT(h.authConfig.JWTKey)
+	jwt := auth.NewJWT(h.oauthConfig.JWTKey)
 	userInfo, err := jwt.Parse(sessionCookie.Value)
 	if err != nil {
 		h.logger.Printf("info: %s", err.Error())
