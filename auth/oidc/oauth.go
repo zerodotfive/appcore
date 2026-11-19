@@ -21,3 +21,9 @@ func GetOAuth(ctx context.Context, config *OAuthConfig) (*oidc.Provider, *oauth2
 		Scopes:       config.AuthScopes,
 	}, nil
 }
+
+func GetVerifierConfig(config *OAuthConfig) *oidc.Config {
+	return &oidc.Config{
+		ClientID: config.AuthClientID,
+	}
+}

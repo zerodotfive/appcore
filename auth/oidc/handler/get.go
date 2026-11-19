@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/zerodotfive/appcore/auth"
 	"github.com/zerodotfive/appcore/auth/oidc"
@@ -171,6 +172,29 @@ func (h *Handler) callback(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
+	}
+
+	idTokenRaw, ok := token.Extra("id_token").(string)
+	if ok {
+		verifier := provider.Verifier(oidc.GetVerifierConfig(h.oauthConfig))
+		idToken, err := verifier.Verify(r.Context(), idTokenRaw)
+		if err != nil {
+			h.logger.Printf("callback: %s", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+
+			return
+		}
+
+		if err := idToken.Claims(&userInfo); err != nil {
+			h.logger.Printf("callback: %s", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+
+			return
+		}
+
+		if userInfo.Email == "" && strings.Contains(userInfo.Login, "@") {
+			userInfo.Email = userInfo.Login
+		}
 	}
 
 	jwt := auth.NewJWT(h.oauthConfig.JWTKey)
